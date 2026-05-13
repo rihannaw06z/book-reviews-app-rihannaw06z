@@ -2,27 +2,26 @@
   <div class="alert alert-warning"><%= flash[:alert] %></div>
 <% end %>
 
-<h1>Search for a Book</h1>
-<%= form_with url: search_path, method: :get, local: true do |form| %>
-  <%= form.text_field :query, placeholder: "Enter book title...", value: params[:query] %>
-  <%= form.submit "Search" %>
-<% end %>
-
-<h2>Search Results</h2>
-
-<% if @books.any? %>
-  <% @books.each do |book| %>
-    <% info = book["volumeInfo"] %>
-    <div class="book">
-      <h2><%= info["title"] %></h2>
-      <p><%= info["authors"]&.join(", ") %></p>
-      <p><%= info["description"] %></p>
-      <% if info["imageLinks"] %>
-        <img src="<%= info["imageLinks"]["thumbnail"] %>" alt="<%= info["title"] %> cover">
-      <% end %>
-      <a href="<%= info["infoLink"] %>">More info</a>
-    </div>
+  <h1>Search for a Book</h1>
+  <%= form_with url: search_path, method: :get, local: true do |form| %>
+    <%= form.text_field :query, placeholder: "Enter book title...", value: params[:query] %>
+    <%= form.submit "Search" %>
   <% end %>
-<% else %>
-  <p>No results found.</p>
-<% end %>
+
+  <h3>Search Results</h3>
+
+  <% if @google_data.any? %>
+    <% @google_data.each do |book| %>
+      <% info = book["volumeInfo"] %>
+      <div class="text-md book">
+        <h2><%= info["title"] %></h2>
+        <p><%= info["authors"]&.join(", ") %></p>
+        <% if info["imageLinks"] %>
+          <img src="<%= info["imageLinks"]["thumbnail"] %>" alt="<%= info["title"] %> cover">
+        <% end %>
+        <%= link_to "View Details", book_path(book["id"]), class: "inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+      </div>
+    <% end %>
+  <% else %>
+    <p>No results found. It might be our fault! Please try again.</p>
+  <% end %>

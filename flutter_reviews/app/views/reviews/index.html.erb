@@ -1,0 +1,18 @@
+<h1>Reviews for <strong><%= @book_details["volumeInfo"]["title"]%></strong></h1>
+<% if @reviews.any? %>
+  <ul>
+    <% @reviews.each do |review| %>
+      <li>
+        <strong><%= review.title %></strong><br>
+        <strong>Rating:</strong> <%= review.rating %>/5<br>
+        <%= review.comment %>
+        <%= link_to "View", book_review_path(params[:book_id], review) %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No reviews yet.</p>
+<% end %>
+
+<%= link_to "Write a Review", new_book_review_path(params[:book_id]), class: "btn btn-primary" %>
+<%= link_to "Back to Book Details", book_path(params[:book_id]), class: "btn btn-secondary" %>

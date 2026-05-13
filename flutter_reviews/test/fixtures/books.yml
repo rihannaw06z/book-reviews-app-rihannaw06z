@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  google_book_id: MyString
+  title: MyString
+  authors: MyString
+  publisher: MyString
+  published_date: MyString
+  categories: MyString
+
+two:
+  google_book_id: MyString
+  title: MyString
+  authors: MyString
+  publisher: MyString
+  published_date: MyString
+  categories: MyString

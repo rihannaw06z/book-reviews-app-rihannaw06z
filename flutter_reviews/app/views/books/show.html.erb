@@ -1,0 +1,15 @@
+<% content_for :title, @google_data["volumeInfo"]["title"] %>
+
+<%= link_to "Back to Search", root_path, class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" %>
+<h1><%= @google_data["volumeInfo"]["title"] %></h1>
+<p><strong>Authors:</strong> <%= @google_data["volumeInfo"]["authors"]&.join(", ") %></p>
+<p><strong>Genres:</strong> <%= @google_data["volumeInfo"]["categories"]&.join(", ") %></p>
+<p><strong>Publisher:</strong> <%= @google_data["volumeInfo"]["publisher"] %></p>
+<p><strong>Published Date:</strong> <%= @google_data["volumeInfo"]["publishedDate"] %></p>
+<p><strong>Description:</strong> <%= @google_data["volumeInfo"]["description"] %></p>
+
+<% if @google_data["volumeInfo"]["imageLinks"] %>
+  <img src="<%= @google_data["volumeInfo"]["imageLinks"]["thumbnail"] %>" alt="<%= @google_data["volumeInfo"]["title"] %> cover">
+<% end %>
+
+<%= link_to "Review this Book", new_book_review_path(@google_data["id"]), class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" %>
