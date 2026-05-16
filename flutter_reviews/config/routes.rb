@@ -1,8 +1,10 @@
 Rails.application.routes.draw do
+  get "books_by/:author", to: "books_by#index", as: :books_by_author
   resources :books, param: :id do  
     resources :reviews
   end
-get "search", to: "books#index"
+  resources :books_by, only: [:index]
+  get "search", to: "books#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

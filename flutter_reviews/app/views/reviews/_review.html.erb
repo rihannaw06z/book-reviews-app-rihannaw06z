@@ -1,7 +1,7 @@
 <div id="<%= dom_id review %>" class="w-full sm:w-auto my-5 space-y-5">
   <div>
     <strong class="block font-medium mb-1">Book Title:</strong>
-    <%= review.google_book_id %>
+    <%= review.book_details&.[]("volumeInfo")&.[]("title") %>
   </div>
   <div>
     <strong class="block font-medium mb-1">Rating:</strong>

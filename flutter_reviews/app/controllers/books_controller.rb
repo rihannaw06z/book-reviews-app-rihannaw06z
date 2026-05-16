@@ -3,8 +3,8 @@ class BooksController < ApplicationController
     @query = params[:query]
     if @query.present?
       key = ENV["GOOGLE_BOOKS_KEY"]
-      q = CGI.escape(@query)
-      url = "https://www.googleapis.com/books/v1/volumes?q=#{q}&key=#{key}&country=US"
+      q = CGI.escape(@query)  # Escape the query to handle special characters
+      url = "https://www.googleapis.com/books/v1/volumes?q=#{q}&orderBy=relevance&key=#{key}&country=US" 
 
       response = HTTParty.get(url, verify: false)
       parsed = JSON.parse(response.body.force_encoding("UTF-8"))
@@ -20,20 +20,20 @@ class BooksController < ApplicationController
                         identifiers.find { |id| id["type"] == "ISBN_10" }
           
           if isbn_entry
-            isbn_url = "https://www.googleapis.com/books/v1/volumes?q=isbn:#{isbn_entry['identifier']}&key=#{key}&country=US"
+            isbn_url = "https://www.googleapis.com/books/v1/volumes?q=isbn:#{isbn_entry['identifier']}&orderBy=relevance&key=#{key}&country=US"
             isbn_response = HTTParty.get(isbn_url, verify: false)
             isbn_parsed = JSON.parse(isbn_response.body.force_encoding("UTF-8"))
             @google_data = isbn_parsed["items"] || []
           else
             @google_data = parsed["items"] || []
           end
-
+            # If the initial search yields few results, try a fallback search by author of first result.
           if @google_data.size <= 1
             author = parsed["items"].first["volumeInfo"]["authors"]&.first
             if author
-              fallback_url = "https://www.googleapis.com/books/v1/volumes?q=inauthor:#{CGI.escape(author)}&key=#{key}&country=US"
+              fallback_url = "https://www.googleapis.com/books/v1/volumes?q=inauthor:#{CGI.escape(author)}&orderBy=relevance&key=#{key}&country=US"
               fallback_response = HTTParty.get(fallback_url, verify: false)
-              fallback_parsed = JSON.parse(fallback_response.body.force_encoding("UTF-8"))
+              fallback_parsed = JSON.parse(fallback_response.body.force_encoding("UTF-8")) # Ensure UTF-8 encoding
               @google_data = fallback_parsed["items"] || []
             end
           end
