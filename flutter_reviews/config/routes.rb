@@ -1,10 +1,18 @@
 Rails.application.routes.draw do
+  resource :session, only: [ :new, :create, :destroy ]
+  resources :passwords, param: :token
   get "books_by/:author", to: "books_by#index", as: :books_by_author
   resources :books, param: :id do  
-    resources :reviews
+    resources :reviews do
+      resources :likes, only: [ :create, :destroy ], param: :id
+    end
   end
   resources :books_by, only: [:index]
+  resources :users, only: [ :new, :create, :show, :edit, :update ], param: :id
   get "search", to: "books#index"
+  get "users/new"
+  get "users/create"
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

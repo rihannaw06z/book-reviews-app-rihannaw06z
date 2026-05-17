@@ -1,5 +1,8 @@
 class ReviewsController < ApplicationController
-  before_action :set_review, only: %i[ show edit update destroy ]
+  before_action :set_review, only: %i[ show ]
+  before_action :require_authentication, except: %i[index show]
+  # Only allow users to edit or delete their own reviews
+  before_action :set_user_review, only: %i[ edit update destroy ]
 
   # GET /reviews or /reviews.json
   def index
@@ -13,7 +16,7 @@ class ReviewsController < ApplicationController
 
   # GET /reviews/new
   def new
-    @review = Review.new
+    @review = Current.user.reviews.build
       
   end
 
@@ -23,7 +26,7 @@ class ReviewsController < ApplicationController
 
   # POST /reviews or /reviews.json
   def create
-    @review = Review.new(review_params.merge(google_book_id: params[:book_id]))
+    @review = Current.user.reviews.build(review_params.merge(google_book_id: params[:book_id]))
     respond_to do |format|
       if @review.save
         format.html { redirect_to book_path(params[:book_id]), notice: "Review was successfully submitted." }
@@ -59,9 +62,16 @@ class ReviewsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+    # Used for publicly viewable reviews (show action) - allows anyone to see the review details.
     def set_review
       @review = Review.find(params.expect(:id))
+    end
+
+    # Ensure users can only edit or delete their own reviews
+    def set_user_review
+      @review = Current.user.reviews.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      redirect_to book_reviews_path(params[:book_id]), alert: "You can only edit or delete your own reviews."
     end
 
     # Only allow a list of trusted parameters through.
