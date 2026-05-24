@@ -1,4 +1,5 @@
 class BooksByController < ApplicationController
+  allow_unauthenticated_access only: [:index]
   def index
     @query = params[:author]
     if @query.present?                              #allows users to search for books by author name, and list results by relevance.

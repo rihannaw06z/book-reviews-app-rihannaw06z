@@ -12,6 +12,7 @@ class ReviewsController < ApplicationController
 
   # GET /reviews/1 or /reviews/1.json
   def show
+    
   end
 
   # GET /reviews/new
@@ -76,7 +77,7 @@ class ReviewsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def review_params
-      params.require(:review).permit(:title, :rating, :comment)
+      params.require(:review).permit(:title, :rating, :comment, :likes_count)
     end
 
     def fetch_book_details(book_id)

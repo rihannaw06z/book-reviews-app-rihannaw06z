@@ -1,4 +1,5 @@
 class BooksController < ApplicationController
+  allow_unauthenticated_access only: [:index, :show]
   def index
     @query = params[:query]
     if @query.present?

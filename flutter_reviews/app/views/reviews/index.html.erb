@@ -1,39 +1,42 @@
 <h1 class="text-2xl font-bold mt-4">Reviews for <strong><em><%= @book_details["volumeInfo"]["title"]%></em></strong></h1>
-<% if @reviews.any? %>
-  <ul class="list-disc list-inside mt-4 space-y-4 outline outline-1 outline-gray-600 p-4 rounded-lg">
-    <% @reviews.each do |review| %>
-      <li>
-        <strong class="text-lg font-bold"><em><%= review.user.username %></em></strong><br>
-        <strong class="text-md font-bold"><%= review.title %></strong><br>
-        <strong class="text-md font-semibold">Rating:</strong> <%= review.rating %>/5<br>
-        <%= review.comment %>
-        <%= link_to "View", book_review_path(params[:book_id], review), class: "btn btn-outline-primary underline text-blue-500 hover:text-blue-700" %>
-        <div class="likes">
-          <% if authenticated? %>
-            <% existing_like = review.likes.find_by(user: Current.user) %>
-            <% if existing_like %>
-            <!-- unlike button sends DELETE request to remove the existing like -->
-             <%= button_to book_review_like_path(params[:book_id], review, existing_like), method: :delete, class: "btn btn-outline-danger btn-outline-red bg-transparent" do %>
-             ♥️ Unlike (<%= review.likes.count%>)
-             <% end %>
-            <% else %>
-            <!--like button sends POST request to create a new like -->
-             <%= button_to book_review_likes_path(params[:book_id], review), method: :post, class: "btn btn-outline-success bg-transparent" do %>
-             🤍 Like (<%= review.likes.count %>)
-             <% end %>
-            <% end %>
-          <% else %>
-          <!-- Logged out view -->
-          <span>🤍 Likes: <%= review.likes.count %><%= "like".pluralize(review.likes.count) %>
-          </span>
-          <% end %>
-        </div>
-      </li>
-    <% end %>
-  </ul>
-<% else %>
-  <p>No reviews yet.</p>
-<% end %>
 
-<%= link_to "Write a Review", new_book_review_path(params[:book_id]), class: "btn btn-primary underline text-blue-500 hover:text-blue-700" %>
-<%= link_to "Back to Book Details", book_path(params[:book_id]), class: "btn btn-secondary underline text-gray-500 hover:text-gray-700" %>
+<div class="container mx-auto">
+  <% if @reviews.any? %>
+    <ul class="list-disc list-inside mt-4 space-y-4 flex grid grid-rows-4 gap-4 mt-4">
+      <% @reviews.each do |review| %>
+        <li class="bg-orange-600/40 p-4 rounded outline outline-black shadow-md w-3/4">
+          <strong class="text-xl font-bold"><em><%= review.user.username %></em></strong><br>
+          <strong class="text-2xl font-bold"><%= review.title %></strong><br>
+          <strong class="text-md font-semibold">Rating:</strong> <%= review.rating %>/5<br>
+          <strong class="text-md font-semibold">Comment:</strong> <%= review.comment     %>
+          <%= link_to "View", book_review_path(params[:book_id], review), class: "btn btn-outline-primary font-bold right-10 text-lg underline text-blue-900 hover:text-blue-700" %>
+          <div class="likes text-sm font-bold mt-2">
+            <% if authenticated? %>
+              <% existing_like = review.likes.find_by(user: Current.user) %>
+              <% if existing_like %>
+              <!-- unlike button sends DELETE request to remove the existing like -->
+              <%= button_to book_review_like_path(params[:book_id], review, existing_like), method: :delete, class: "btn btn-outline-danger btn-outline-red bg-transparent" do %>
+              ♥️ Unlike (<%= review.likes.count%>)
+              <% end %>
+              <% else %>
+              <!--like button sends POST request to create a new like -->
+              <%= button_to book_review_likes_path(params[:book_id], review), method: :post, class: "btn btn-outline-success bg-transparent" do %>
+              🤍 Like (<%= review.likes.count %>)
+              <% end %>
+              <% end %>
+            <% else %>
+            <!-- Logged out view -->
+            <span>🤍 Likes: (<%= review.likes.count %>)
+            </span>
+            <p>Sign in to like this review!</p>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p>No reviews yet.</p>
+  <% end %>
+</div>
+<%= link_to "Write a Review", new_book_review_path(params[:book_id]), class: "btn btn-primary font-bold outline outline-blue-500 hover:text-blue-700 bg-blue-500 text-white p-2 mb-8 ml-6" %>
+<%= link_to "Back to Book Details", book_path(params[:book_id]), class: "btn btn-secondary font-bold outline outline-gray-500 text-gray-500 hover:text-gray-700 bg-gray-200 p-2 mb-8 ml-6" %>
